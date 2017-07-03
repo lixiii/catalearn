@@ -1,6 +1,6 @@
 # Catalearn
 
-### A module for running machine learning code in cloud GPUs#
+### A module for running machine learning code in cloud GPUs
 
 ## Installation
 `pip install git+https://github.com/Catalearn/catalearn`
