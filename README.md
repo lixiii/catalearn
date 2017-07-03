@@ -16,4 +16,4 @@ def func(name):
     
     # run machine learning code here
 
-catalearn.run_on_gpu(func, name)
+catalearn.run(func, name)

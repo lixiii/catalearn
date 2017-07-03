@@ -27,7 +27,7 @@ class DummyModule(object):
 
 sys.modules["gpu"] = DummyModule
 
-def run_on_gpu(func, *args, local = False):
+def run(func, *args, local = False):
 
 	if not callable(func):
 		color_print('please pass in a function')
