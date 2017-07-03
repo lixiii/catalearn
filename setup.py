@@ -6,6 +6,11 @@ setup(name='catalearn',
       url='https://github.com/Catalearn/catalearn',
       author='Edward Liu',
       author_email='edwardliu573@gmail.com',
-      license='MIT',
+      license='GNU LGPL',
       packages=['catalearn'],
-      zip_safe=False)
+      zip_safe=False,
+      install_requires=[
+          'dill',
+          'requests',
+          'websocket-client'
+      ])
