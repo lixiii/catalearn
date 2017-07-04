@@ -6,7 +6,7 @@ import time
 import sys
 import re
 
-CATALEARN_URL = 'catalearn'
+CATALEARN_URL = 'catalearn.com'
 
 class bcolors:
     HEADER = '\033[95m'
