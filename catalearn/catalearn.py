@@ -5,6 +5,8 @@ from websocket import create_connection
 import time
 import sys
 import re
+from inspect import signature
+
 
 CATALEARN_URL = 'catalearn.com'
 
@@ -31,6 +33,12 @@ def run(func, *args, local = False):
 
 	if not callable(func):
 		color_print('please pass in a function')
+		return
+
+	n_vars = len(signature(func).parameters)
+	if len(args) != n_vars:
+		color_print('Oops, the function arguments don\'t seem to match')
+		color_print('Do you have ' + str(signature(func)) + '?')
 
 	gpu_ip = ''
 	gpu_hash = ''
