@@ -38,7 +38,7 @@ def run(func, *args, local = False):
 	n_vars = len(signature(func).parameters)
 	if len(args) != n_vars:
 		color_print('Oops, the function arguments don\'t seem to match')
-		color_print('Do you have ' + str(signature(func)) + '?')
+		color_print('Did you pass in ' + str(signature(func)) + '?')
 
 	gpu_ip = ''
 	gpu_hash = ''
