@@ -16,7 +16,17 @@ This is where catalearn comes in, simply upload your code and data with the modu
 ## Note: Currently it only works with python3 and only supports the Tensorflow and Keras frameworks
 
 ## Usage
-### Example: Training a CNN on the MNIST dataset
+API: `catalearn.run(function, *args)`
+```
+import catalearn
+def func(data1, data2):
+    # define model and train
+    return model
+
+catalearn.run(func, data1, data2)
+```
+
+## Example: Training a CNN on the MNIST dataset
 ### Dependencies: __catalearn__, __keras__ and __pandas__
 ```
 from keras.datasets import mnist
