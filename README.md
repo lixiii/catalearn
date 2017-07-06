@@ -6,9 +6,9 @@
 
 The Catalearn module aims to provide access to fast GPUs for those interested in working on machine learning projects but don't have the resources to buy their own GPU. 
 
-AWS GPU instances are great, but they take quite some time to set up. And since they charge by the hour, you would end up paying a lot more than the time you spend training the model.
+AWS GPU instances are great, but they take quite some time to set up. And since they charge by the hour, you would end up paying for a lot more time than the time you spend training the model.
 
-This is where catalearn comes in, simply upload your code and data with the module, and it will handle the rest. We are still beta testing so everything is completely free.
+This is where catalearn comes in, simply upload your code and data with the module, and it will handle the rest. We are still beta testing so everything is __completely free__.
 
 ## Installation
 `pip3 install git+https://github.com/Catalearn/catalearn`
