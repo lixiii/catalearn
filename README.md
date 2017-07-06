@@ -76,6 +76,7 @@ print(model)
 ```
 
 ## __Common Problems__
+
 1. Tensor must be from the same graph
 __Error:__ `ValueError: Tensor("mul_3:0", shape=(32,), dtype=float32) must be from the same graph as Tensor("mul:0", shape=(32,), dtype=float32).`
 
