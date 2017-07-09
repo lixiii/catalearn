@@ -7,7 +7,7 @@ import sys
 import re
 from inspect import signature
 
-
+sys.setrecursionlimit(50000)
 CATALEARN_URL = 'catalearn.com'
 
 class bcolors:
