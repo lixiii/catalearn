@@ -8,7 +8,7 @@ import re
 from inspect import signature
 
 sys.setrecursionlimit(50000)
-CATALEARN_URL = 'catalearn.com'
+
 
 class bcolors:
     HEADER = '\033[95m'
@@ -31,6 +31,11 @@ sys.modules["gpu"] = DummyModule
 
 def run(func, *args, local = False):
 
+	CATALEARN_URL = 'catalearn.com'
+
+	if local:
+		CATALEARN_URL = 'localhost'
+
 	if not callable(func):
 		color_print('please pass in a function')
 		return
@@ -45,8 +50,11 @@ def run(func, *args, local = False):
 
 	color_print("starting GPU server, this will take about 10 seconds")
 	r = requests.post('http://{}/api/computeRequest'.format(CATALEARN_URL), 
-		data={'user_name' : 'user1'})
+		data={'username' : 'user1'})
 	res = r.json()
+	if 'err' in res:
+		color_print('server is too busy, please try again later')
+		return
 	color_print("server started, sending data to server")
 	gpu_hash = res['hash']
 	gpu_ip = res['ip']
