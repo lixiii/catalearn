@@ -50,7 +50,7 @@ def run(func, *args, local = False):
 			  'type' : 'gpu'})
 	res = r.json()
 	if 'err' in res:
-		color_print(res.err)
+		color_print(res['err'])
 		return
 	color_print("server started, sending data to server")
 	gpu_hash = res['hash']
