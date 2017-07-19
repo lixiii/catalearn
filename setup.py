@@ -1,4 +1,6 @@
 from setuptools import setup
+from shutil import copyfile
+import os
 
 setup(name='catalearn',
       version='0.1',
@@ -12,5 +14,10 @@ setup(name='catalearn',
       install_requires=[
           'dill',
           'requests',
-          'websocket-client'
+          'websocket-client',
+          'requests_toolbelt',
+          'Ipython',
+          'tqdm'
       ])
+
+copyfile('./catalearn_magic.py', os.path.expanduser('~/.ipython/profile_default/startup/catalearn_magic.py'))
