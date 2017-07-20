@@ -10,6 +10,7 @@ setup(name='catalearn',
       author_email='edwardliu573@gmail.com',
       license='GNU LGPL',
       packages=['catalearn'],
+      include_package_data=True,
       zip_safe=False,
       install_requires=[
           'dill',

@@ -9,7 +9,7 @@ class CatalearnMagics(Magics):
     def catalyse(self, line, cell):
         try:
             connector = catalearn.ServerConnector('user1', 'local')
-            result = catalearn.run_in_cloud(cell, connector)
+            result = catalearn.run_in_cloud(cell, connector, self.shell.user_ns)
             for k in result:
                 self.shell.user_ns[k] = result[k]
         except Exception as e:

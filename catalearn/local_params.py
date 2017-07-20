@@ -5,11 +5,11 @@ import builtins
 import dill
 import os
 
-def get_local_vars(source, depth):
+def get_local_vars(source, namespace):
 
-    local_vars = sys._getframe(depth).f_locals
+    # local_vars = sys._getframe(depth).f_locals
 
-    local_vars_names = set(local_vars.keys())
+    local_vars_names = set(namespace.keys())
 
     root = ast.parse(source)
 
@@ -26,6 +26,6 @@ def get_local_vars(source, depth):
 
     params = {}
     for v in required_local_vars:
-        params[v] = local_vars[v]
+        params[v] = namespace[v]
 
     return params

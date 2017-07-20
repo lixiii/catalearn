@@ -8,7 +8,7 @@ import json
 import dill
 import os
 from tqdm import tqdm
-import time
+from .dummies import import_all, unimport_all
 
 class ServerConnector():
 
@@ -104,7 +104,11 @@ class ServerConnector():
             f.write(r.content)
 
         with open('return.pkl', "rb" ) as f:
+
+            import_all() # Hack: a workaround for dill's pickling problem
             result = dill.load(f)['return_env']  
+            unimport_all()
             if result is None:
-                color_print('computation failed')
+                color_print('Computation failed')
+            color_print("Done!")
             return result
