@@ -7,7 +7,7 @@
 2. `pip3 install git+https://github.com/yl573/catalearn`
 
 ## How it works
-* user adds %%catalyse to a cell
+* user adds `%%catalyse` to a cell
 * module finds out the variables required to run this cell by parsing the code
 * uploads the variables
 * computation starts in the server
