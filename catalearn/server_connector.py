@@ -24,7 +24,7 @@ class ServerConnector():
 
     def contact_server(self):
 
-        color_print("Starting GPU server, this will take about 10 seconds")
+        color_print("Starting server, this will take about 10 seconds")
         r = requests.post('http://{}/api/computeRequest'.format(self.CATALEARN_URL), 
         data={'username' : self.username,
                 'type' : self.type})
