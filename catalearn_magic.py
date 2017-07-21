@@ -8,7 +8,6 @@ class CatalearnMagics(Magics):
 
     @cell_magic
     def catalyse(self, line, cell):
-        
         if len(line) == 0:
             print('User token missing')
             print('Please pass it in as %%catalyse <YOUR_TOKEN>')
@@ -17,7 +16,7 @@ class CatalearnMagics(Magics):
         args = line.split(' ')
         user_token = args[0]
         if len(args) == 1:
-            mode = 'test'
+            mode = 'local'
         else:
             mode = args[1]
 
