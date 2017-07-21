@@ -7,11 +7,6 @@ import sys
 
 def run_in_cloud(cell, connector, namespace):
 
-    gpu_hash, gpu_ip, ws_port = connector.contact_server()
-
-    if (gpu_hash is None or gpu_ip is None or ws_port is None):
-        return
-
     local_vars = get_local_vars(cell, namespace)
     imports, unused_vars = find_required_imports(cell, local_vars)
 
@@ -25,6 +20,11 @@ def run_in_cloud(cell, connector, namespace):
 
     with open('uploads.pkl', 'wb') as file:
         dill.dump(uploads, file)
+
+    gpu_hash, gpu_ip, ws_port = connector.contact_server()
+
+    if (gpu_hash is None or gpu_ip is None or ws_port is None):
+        return
 
     connector.upload_params_magic(gpu_ip, gpu_hash)
     outUrl = connector.stream_output(gpu_ip, gpu_hash, ws_port)

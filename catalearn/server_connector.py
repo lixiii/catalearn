@@ -54,10 +54,11 @@ class ServerConnector():
         time.sleep(0.5)
         file_size = os.path.getsize('uploads.pkl')
 
-        pbar = tqdm(total=100)
+        pbar = tqdm(total=file_size, unit='B', unit_scale=True)
         
         def callback(monitor):
-            progress = 100 * (monitor.bytes_read - callback.last_bytes_read) / file_size
+
+            progress = monitor.bytes_read - callback.last_bytes_read
             pbar.update(progress)
             callback.last_bytes_read = monitor.bytes_read
         callback.last_bytes_read = 0
@@ -99,9 +100,16 @@ class ServerConnector():
     def get_return_object(self, outUrl):
 
         color_print("Downloading result")
-        r = requests.get(outUrl)
+
+        r = requests.get(outUrl, stream=True)
+        total_size = int(r.headers.get('content-length', 0)); 
         with open('return.pkl', 'wb') as f:
-            f.write(r.content)
+            pbar = tqdm(total=total_size, unit='B', unit_scale=True)
+            chunck_size = 32768
+            for data in r.iter_content(chunck_size):
+                f.write(data)
+                pbar.update(chunck_size)
+            pbar.close()
 
         with open('return.pkl', "rb" ) as f:
 
