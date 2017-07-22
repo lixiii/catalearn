@@ -20,8 +20,6 @@ class CatalearnMagics(Magics):
         else:
             mode = args[1]
 
-        print(user_token, mode)
-
         try:
             connector = catalearn.ServerConnector(user_token, mode)
             result = catalearn.run_in_cloud(cell, connector, self.shell.user_ns)

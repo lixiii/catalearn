@@ -21,10 +21,11 @@ def run_in_cloud(cell, connector, namespace):
     with open('uploads.pkl', 'wb') as file:
         dill.dump(uploads, file)
 
-    gpu_hash, gpu_ip, ws_port = connector.contact_server()
+    server_info = connector.contact_server()
+    if (server_info is None):
+        return 
 
-    if (gpu_hash is None or gpu_ip is None or ws_port is None):
-        return
+    gpu_hash, gpu_ip, ws_port = server_info
 
     connector.upload_params_magic(gpu_ip, gpu_hash)
     outUrl = connector.stream_output(gpu_ip, gpu_hash, ws_port)

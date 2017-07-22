@@ -31,7 +31,7 @@ class ServerConnector():
         res = r.json()
         if 'err' in res:
             color_print(res['err'])
-            return (None, None, None)
+            return None
         else:
             gpu_hash = res['hash']
             gpu_ip = res['ip']
