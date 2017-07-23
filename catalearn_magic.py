@@ -23,6 +23,8 @@ class CatalearnMagics(Magics):
         try:
             connector = catalearn.ServerConnector(user_token, mode)
             result = catalearn.run_in_cloud(cell, connector, self.shell.user_ns)
+            if result is None:
+                return
             for k in result:
                 self.shell.user_ns[k] = result[k]
         except Exception as e:

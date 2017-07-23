@@ -2,7 +2,6 @@
 import requests
 from websocket import create_connection
 import time
-from .color_print import color_print
 from requests_toolbelt import MultipartEncoder, MultipartEncoderMonitor
 import json
 import dill
@@ -24,13 +23,13 @@ class ServerConnector():
 
     def contact_server(self):
 
-        color_print("Starting server, this will take about 10 seconds")
+        print("Starting server, this will take about 10 seconds")
         r = requests.post('http://{}/api/computeRequest'.format(self.CATALEARN_URL), 
         data={'username' : self.username,
                 'type' : self.type})
         res = r.json()
         if 'err' in res:
-            color_print(res['err'])
+            print(res['err'])
             return None
         else:
             gpu_hash = res['hash']
@@ -50,7 +49,7 @@ class ServerConnector():
  
 
     def upload_params(self, url, job_hash):
-        color_print("Uploading data")
+        print("Uploading data")
         time.sleep(0.5)
         file_size = os.path.getsize('uploads.pkl')
 
@@ -82,24 +81,28 @@ class ServerConnector():
 
         outUrl = None
         ws.send(gpu_hash)
-        while True:
-            message = ws.recv()
-            msgJson = json.loads(message)
-            if 'end' in msgJson:
-                if 'error' in msgJson: 
-                    outUrl = None
+        try:
+            while True:
+                message = ws.recv()
+                msgJson = json.loads(message)
+                if 'end' in msgJson:
+                    if 'error' in msgJson: 
+                        outUrl = None
+                    else:
+                        outUrl = msgJson['outUrl']
+                    ws.close()
+                    break
                 else:
-                    outUrl = msgJson['outUrl']
-                ws.close()
-                break
-            else:
-                print(msgJson['message'], end='')
-        return outUrl    
+                    print(msgJson['message'], end='')
+            return outUrl 
+        except KeyboardInterrupt:
+            print('\nJob interrupted')
+            ws.close()   
 
 
     def get_return_object(self, outUrl):
 
-        color_print("Downloading result")
+        print("Downloading result")
 
         r = requests.get(outUrl, stream=True)
         total_size = int(r.headers.get('content-length', 0)); 
@@ -117,6 +120,6 @@ class ServerConnector():
             result = dill.load(f)['return_env']  
             unimport_all()
             if result is None:
-                color_print('Computation failed')
-            color_print("Done!")
+                print('Computation failed')
+            print("Done!")
             return result
