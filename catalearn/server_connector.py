@@ -23,7 +23,7 @@ class ServerConnector():
             self.CATALEARN_URL = 'catalearn.com'   
 
     def verify_key(self, key):
-        r = self.session.post('http://{}/api/admin/verifyKey'.format(self.CATALEARN_URL)
+        r = self.session.post('http://{}/api/admin/verifyKey'.format(self.CATALEARN_URL))
         res = r.json()
         if 'err' in res:
             print(res['err'])
