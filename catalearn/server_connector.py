@@ -9,22 +9,32 @@ import os
 from tqdm import tqdm
 from .dummies import import_all, unimport_all
 
+# username == userKey
 class ServerConnector():
 
     def __init__(self, username, instanceType):  
         self.GPU_SERVER_PORT = '8000'
         self.username = username
         self.type = instanceType
+        self.session = requests.Session()
         if instanceType == 'local':
-            self.CATALEARN_URL = 'localhost'
+            self.CATALEARN_URL = 'localhost:8080'
         else:
-            self.CATALEARN_URL = 'catalearn.com'
+            self.CATALEARN_URL = 'catalearn.com'   
 
+    def verify_key(self, key):
+        r = self.session.post('http://{}/api/admin/verifyKey'.format(self.CATALEARN_URL)
+        res = r.json()
+        if 'err' in res:
+            print(res['err'])
+            return False
+        else:
+            return True  
 
     def contact_server(self):
 
-        print("Starting server, this will take about 10 seconds")
-        r = requests.post('http://{}/api/computeRequest'.format(self.CATALEARN_URL), 
+        print("Starting server, this will take about 2 minutes")
+        r = self.session.post('http://{}/api/gpu/runJob'.format(self.CATALEARN_URL), 
         data={'username' : self.username,
                 'type' : self.type})
         res = r.json()
@@ -70,7 +80,7 @@ class ServerConnector():
                 }
             )
             monitor = MultipartEncoderMonitor(encoder, callback)
-            r = requests.post(url, data=monitor, headers={'Content-Type': monitor.content_type})
+            r = self.session.post(url, data=monitor, headers={'Content-Type': monitor.content_type})
             pbar.close()
 
     def stream_output(self, gpu_ip, gpu_hash, ws_port):
@@ -104,7 +114,7 @@ class ServerConnector():
 
         print("Downloading result")
 
-        r = requests.get(outUrl, stream=True)
+        r = self.session.get(outUrl, stream=True)
         total_size = int(r.headers.get('content-length', 0)); 
         with open('return.pkl', 'wb') as f:
             pbar = tqdm(total=total_size, unit='B', unit_scale=True)
@@ -123,3 +133,4 @@ class ServerConnector():
                 print('Computation failed')
             print("Done!")
             return result
+
