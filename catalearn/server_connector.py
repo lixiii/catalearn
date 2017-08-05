@@ -41,11 +41,9 @@ class ServerConnector():
                               data={'username': self.username,
                                     'type': self.type})
         res = r.json()
-        print(res)
 
         jobHash = res['jobHash']
         instanceId = res['instanceId']
-        print(jobHash, instanceId)
         while True:
             r = requests.post('http://{}/api/gpu/checkStatus'.format(self.CATALEARN_URL),
                                   data={'instanceId': instanceId})
