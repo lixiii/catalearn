@@ -6,6 +6,10 @@
 1. First install Jupyter Notebook
 2. `pip3 install git+https://github.com/yl573/catalearn`
 
+## Update
+1. `pip3 uninstall catalearn`
+2. `pip3 install git+https://github.com/yl573/catalearn`
+
 ## How it works
 * `%%catalyse <YOUR_HASH> gpu`
 
