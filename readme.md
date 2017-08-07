@@ -49,6 +49,8 @@ model.add(Activation('softmax'))
 model.compile(loss='categorical_crossentropy', optimizer='Adadelta', metrics=['accuracy'])
 model.fit(x_train_reshape, y_train_onehot, epochs=5, batch_size=32)
 
+del x_train_reshape, x_test_reshape, y_train_onehot, y_test_onehot
+
 loss_and_metrics = model.evaluate(x_test_reshape, y_test_onehot, batch_size=512)
 print("\n\nTrained model has test accuracy {0}".format(loss_and_metrics[1]))
 ```
