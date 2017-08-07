@@ -7,6 +7,7 @@ __Catalearn__ is a jupyter notebook plugin that allows you to easily run your co
 ## Installation
 1. First install Jupyter Notebook
 2. Install Catalearn with the following command
+
 `sudo pip3 install git+https://github.com/yl573/catalearn`
 
 ## Update
