@@ -35,7 +35,7 @@ class ServerConnector():
 
     def contact_server(self):
 
-        print("Starting server")
+        print("Starting server, this will take about 3 minutes")
 
         r = requests.post('http://{}/api/gpu/checkAvailability'.format(self.CATALEARN_URL),
                               data={'username': self.username,

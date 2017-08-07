@@ -14,14 +14,14 @@ __Catalearn__ is a jupyter notebook plugin that allows you to easily run your co
 2. `sudo pip3 install git+https://github.com/yl573/catalearn`
 
 ## How it works
-Catalearn can be used through its cell magic `%%catalyse`. The syntax is a follows:
-`%%catalyse <YOUR_API_KEY>`
+Catalearn can be used through its cell magic `%%catalearn`. The syntax is a follows:
+`%%catalearn <YOUR_API_KEY>`
 Where `<YOUR_API_KEY>` is the api key given to you for beta testing
 
 ## EXAMPLE
 Run the code below inside a jupyter cell, replacing `<YOUR_API_KEY>` with the key you were given
 ```
-%%catalyse <YOUR_API_KEY>
+%%catalearn <YOUR_API_KEY>
 
 from keras.datasets import mnist
 import pandas as pd
