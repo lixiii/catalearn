@@ -1,6 +1,6 @@
 # Catalearn
 
-## Run your code on a GPU without any setup
+## Run your code on a GPU with zero setup
 
 __Catalearn__ is a jupyter notebook plugin that allows you to easily run your code on a GPU. You can simply add a one line magic to your cell and it will automatically be run on a cloud GPU. 
 
