@@ -7,16 +7,16 @@ import catalearn
 class CatalearnMagics(Magics):
 
     @cell_magic
-    def catalyse(self, line, cell):
+    def catalearn(self, line, cell):
         if len(line) == 0:
-            print('User token missing')
-            print('Please pass it in as %%catalyse <YOUR_TOKEN>')
+            print('API key missing')
+            print('Please pass it in as %%catalearn <YOUR_API_KEY>')
             return
 
         args = line.split(' ')
         user_token = args[0]
         if len(args) == 1:
-            mode = 'local'
+            mode = 'gpu'
         else:
             mode = args[1]
 
