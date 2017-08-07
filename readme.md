@@ -20,7 +20,7 @@ Where `<YOUR_API_KEY>` is the api key given to you for beta testing
 
 ## EXAMPLE
 Run the code below inside a jupyter cell
-``
+```
 %%catalyse <YOUR_API_KEY>
 
 from keras.datasets import mnist
@@ -51,10 +51,10 @@ model.fit(x_train_reshape, y_train_onehot, epochs=5, batch_size=32)
 
 loss_and_metrics = model.evaluate(x_test_reshape, y_test_onehot, batch_size=512)
 print("\n\nTrained model has test accuracy {0}".format(loss_and_metrics[1]))
-``
+```
 You can then use the model in the next cell
-``
+```
 print(loss_and_metrics)
 print(model)
-``
+```
 
