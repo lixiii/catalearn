@@ -14,3 +14,4 @@ def unimport_all():
     del sys.modules["runners"]
     del sys.modules["loggers"]
     del sys.modules["global_params"]
+    del sys.modules["catalearn"]

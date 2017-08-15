@@ -7,9 +7,14 @@ import json
 import dill
 import os
 from tqdm import tqdm
+import sys
 from .dummies import import_all, unimport_all
 
-# username == userKey
+
+def status_check(res):
+    if res.status_code != 200:
+        print(res.text)
+        sys.exit()
 
 
 class ServerConnector():
@@ -26,6 +31,7 @@ class ServerConnector():
     def verify_key(self, key):
         r = requests.post(
             'http://{}/api/admin/verifyKey'.format(self.CATALEARN_URL))
+        status_check(r)
         res = r.json()
         if 'err' in res:
             print(res['err'])
@@ -40,13 +46,19 @@ class ServerConnector():
         r = requests.post('http://{}/api/gpu/checkAvailability'.format(self.CATALEARN_URL),
                               data={'username': self.username,
                                     'type': self.type})
+        status_check(r)
         res = r.json()
 
-        jobHash = res['jobHash']
+        if 'err' in res:
+            print(res['err'])
+            sys.exit()
+
+        self.jobHash = res['jobHash']
         instanceId = res['instanceId']
         while True:
             r = requests.post('http://{}/api/gpu/checkStatus'.format(self.CATALEARN_URL),
                                   data={'instanceId': instanceId})
+            status_check(r)
             res = r.json()
             if 'err' in res:
                 print(res['err'])
@@ -59,7 +71,8 @@ class ServerConnector():
         print()
 
         r = requests.post('http://{}/api/gpu/runJob'.format(self.CATALEARN_URL),
-                              data={'hash': jobHash})
+                              data={'hash': self.jobHash})
+        status_check(r)
         res = r.json()
         if 'err' in res:
             print(res['err'])
@@ -71,12 +84,12 @@ class ServerConnector():
             return (gpu_hash, gpu_ip, ws_port)
 
     def upload_params_decorator(self, gpu_ip, job_hash):
-        url = 'http://{}:{}/uploadDecorator'.format(
+        url = 'http://{}:{}/runJobDecorator'.format(
             gpu_ip, self.GPU_SERVER_PORT, job_hash)
         self.upload_params(url, job_hash)
 
     def upload_params_magic(self, gpu_ip, job_hash):
-        url = 'http://{}:{}/uploadMagic'.format(
+        url = 'http://{}:{}/runJobMagic'.format(
             gpu_ip, self.GPU_SERVER_PORT, job_hash)
         self.upload_params(url, job_hash)
 
@@ -95,16 +108,18 @@ class ServerConnector():
         callback.last_bytes_read = 0
 
         with open('uploads.pkl', 'rb') as pickle_file:
-            encoder = MultipartEncoder(
-                {
-                    'file': ('uploads.pkl', pickle_file),
+            data = {
+                    'file': ('uploads.pkl', pickle_file, 'application/octet-stream'),
                     'hash': job_hash
                 }
+            encoder = MultipartEncoder(
+                fields=data
             )
             monitor = MultipartEncoderMonitor(encoder, callback)
             r = requests.post(url, data=monitor, headers={
                                   'Content-Type': monitor.content_type})
             pbar.close()
+            status_check(r)
 
     def stream_output(self, gpu_ip, gpu_hash, ws_port):
 
@@ -119,14 +134,15 @@ class ServerConnector():
                 message = ws.recv()
                 msgJson = json.loads(message)
                 if 'end' in msgJson:
-                    if 'error' in msgJson:
-                        outUrl = None
+                    if 'downloadUrl' in msgJson:
+                        outUrl = msgJson['downloadUrl'] 
                     else:
-                        outUrl = msgJson['outUrl']
+                        outUrl = None
                     ws.close()
                     break
                 else:
-                    print(msgJson['message'], end='')
+                    sys.stdout.write(msgJson['message'])
+                    sys.stdout.flush()
             return outUrl
         except KeyboardInterrupt:
             print('\nJob interrupted')
@@ -136,7 +152,8 @@ class ServerConnector():
 
         print("Downloading result")
 
-        r = requests.get(outUrl, stream=True)
+        r = requests.post(outUrl, data={'hash' : self.jobHash}, stream=True)
+        status_check(r)
         total_size = int(r.headers.get('content-length', 0))
         with open('return.pkl', 'wb') as f:
             pbar = tqdm(total=total_size, unit='B', unit_scale=True)
@@ -148,9 +165,9 @@ class ServerConnector():
 
         with open('return.pkl', "rb") as f:
 
-            import_all()  # Hack: a workaround for dill's pickling problem
-            result = dill.load(f)['return_env']
-            unimport_all()
+            # import_all()  # Hack: a workaround for dill's pickling problem
+            result = dill.load(f)
+            # unimport_all()
             if result is None:
                 print('Computation failed')
             print("Done!")
