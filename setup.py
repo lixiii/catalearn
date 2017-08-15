@@ -20,6 +20,3 @@ setup(name='catalearn',
           'Ipython',
           'tqdm'
       ])
-
-os.system("ipython profile create")
-copyfile('./catalearn_magic.py', os.path.expanduser('~/.ipython/profile_default/startup/catalearn_magic.py'))
