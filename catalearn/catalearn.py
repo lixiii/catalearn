@@ -13,11 +13,14 @@ def format(sourceLines): # removes indentation
         head = sourceLines[0]
     return sourceLines
 
-def run_on_gpu(func):
+def run_on_gpu(func, local=False):
 
     def gpu_func(*args, **kwargs):
 
-        connector = ServerConnector('afju4x9p9q3j7s2', 'local')
+        serverType = 'gpu'
+        if local:
+            serverType = 'local'
+        connector = ServerConnector('afju4x9p9q3j7s2', serverType)
         sourceLines = inspect.getsourcelines(func)[0]
         sourceLines = format(sourceLines)
         sourceLines = sourceLines[1:] # remove the decorator

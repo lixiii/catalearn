@@ -13,9 +13,7 @@ from .dummies import import_all, unimport_all
 
 def status_check(res):
     if res.status_code != 200:
-        print(res.text)
-        sys.exit()
-
+        raise ValueError(res.text)
 
 class ServerConnector():
 
@@ -28,16 +26,16 @@ class ServerConnector():
         else:
             self.CATALEARN_URL = 'catalearn.com'
 
-    def verify_key(self, key):
-        r = requests.post(
-            'http://{}/api/admin/verifyKey'.format(self.CATALEARN_URL))
-        status_check(r)
-        res = r.json()
-        if 'err' in res:
-            print(res['err'])
-            return False
-        else:
-            return True
+    # def verify_key(self, key):
+    #     r = requests.post(
+    #         'http://{}/api/admin/verifyKey'.format(self.CATALEARN_URL))
+    #     status_check(r)
+    #     res = r.json()
+    #     if 'err' in res:
+    #         print(res['err'])
+    #         return False
+    #     else:
+    #         return True
 
     def contact_server(self):
 
@@ -49,39 +47,33 @@ class ServerConnector():
         status_check(r)
         res = r.json()
 
-        if 'err' in res:
-            print(res['err'])
-            sys.exit()
-
         self.jobHash = res['jobHash']
         instanceId = res['instanceId']
+        width = 40
+        sys.stdout.write("[%s]" % (" " * width))
+        sys.stdout.flush()
+        sys.stdout.write("\b" * (width+1)) # return to start of line, after '['
         while True:
             r = requests.post('http://{}/api/gpu/checkStatus'.format(self.CATALEARN_URL),
                                   data={'instanceId': instanceId})
             status_check(r)
             res = r.json()
-            if 'err' in res:
-                print(res['err'])
-                return
             if res['started']:
                 break
             time.sleep(3)
-            print('-', end='')
+            sys.stdout.write("-")
+            sys.stdout.flush()
 
-        print()
+        sys.stdout.write("\n")
 
         r = requests.post('http://{}/api/gpu/runJob'.format(self.CATALEARN_URL),
                               data={'hash': self.jobHash})
         status_check(r)
         res = r.json()
-        if 'err' in res:
-            print(res['err'])
-            return None
-        else:
-            gpu_hash = res['hash']
-            gpu_ip = res['ip']
-            ws_port = res['ws_port']
-            return (gpu_hash, gpu_ip, ws_port)
+        gpu_hash = res['hash']
+        gpu_ip = res['ip']
+        ws_port = res['ws_port']
+        return (gpu_hash, gpu_ip, ws_port)
 
     def upload_params_decorator(self, gpu_ip, job_hash):
         url = 'http://{}:{}/runJobDecorator'.format(
