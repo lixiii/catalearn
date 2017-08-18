@@ -2,7 +2,7 @@
 
 ## Run your code on a GPU with zero setup
 
-__Catalearn__ is a python module that allows you to run code on a cloud gpu. It allows you to easily leverage the computing power of GPU servers without having to manage and maintain the infrastructure. 
+__Catalearn__ is a python module that allows you to run code on a cloud gpu. It allows you to easily leverage the computing power of GPUs without having to manage and maintain the infrastructure. 
 
 ## Installation
 Install the Catalearn module with the following command
@@ -15,8 +15,11 @@ Update Catalearn with the following command
 `sudo pip3 install -u catalearn`
 
 ## Usage
+To use the catalearn module, just generate a key on [www.catalearn.com](www.catalearn.com "Title").
+Then replace <YOUR_API_KEY> with the key you generated.
 ```
 import catalearn
+catalearn.login(<YOUR_API_KEY>)
 
 @catalearn.run_on_gpu
 def gpu_function(data):
@@ -29,11 +32,13 @@ result = gpu_function('a lot of data')
 
 ## Example 
 First run `sudo pip3 install keras pandas` to install the modules needed.
+Replace <YOUR_API_KEY> with the key you generated from [Catalearn](www.catalearn.com "Title")
 
 ```
 from keras.datasets import mnist
 import pandas as pd
 import catalearn
+catalearn.login(<YOUR_API_KEY>)
 
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
