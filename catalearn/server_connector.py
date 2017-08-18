@@ -39,8 +39,6 @@ class ServerConnector():
 
     def contact_server(self):
 
-        print("Starting server, this will take about 3 minutes")
-
         r = requests.post('http://{}/api/gpu/checkAvailability'.format(self.CATALEARN_URL),
                               data={'username': self.username,
                                     'type': self.type})
@@ -48,23 +46,20 @@ class ServerConnector():
         res = r.json()
 
         self.jobHash = res['jobHash']
+        idle = res['idle']
         instanceId = res['instanceId']
-        width = 40
-        sys.stdout.write("[%s]" % (" " * width))
-        sys.stdout.flush()
-        sys.stdout.write("\b" * (width+1)) # return to start of line, after '['
-        while True:
-            r = requests.post('http://{}/api/gpu/checkStatus'.format(self.CATALEARN_URL),
-                                  data={'instanceId': instanceId})
-            status_check(r)
-            res = r.json()
-            if res['started']:
-                break
-            time.sleep(3)
-            sys.stdout.write("-")
-            sys.stdout.flush()
-
-        sys.stdout.write("\n")
+        if not idle:
+            print("Starting server, this will take about 3 minutes")
+            while True:
+                r = requests.post('http://{}/api/gpu/checkStatus'.format(self.CATALEARN_URL),
+                                    data={'instanceId': instanceId})
+                status_check(r)
+                res = r.json()
+                if res['started']:
+                    break
+                time.sleep(3)
+                print('.', end='')
+            print()
 
         r = requests.post('http://{}/api/gpu/runJob'.format(self.CATALEARN_URL),
                               data={'hash': self.jobHash})
@@ -93,7 +88,6 @@ class ServerConnector():
         pbar = tqdm(total=file_size, unit='B', unit_scale=True)
 
         def callback(monitor):
-
             progress = monitor.bytes_read - callback.last_bytes_read
             pbar.update(progress)
             callback.last_bytes_read = monitor.bytes_read
@@ -133,8 +127,7 @@ class ServerConnector():
                     ws.close()
                     break
                 else:
-                    sys.stdout.write(msgJson['message'])
-                    sys.stdout.flush()
+                    print(msgJson['message'], end='')
             return outUrl
         except KeyboardInterrupt:
             print('\nJob interrupted')

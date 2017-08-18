@@ -2,32 +2,38 @@
 
 ## Run your code on a GPU with zero setup
 
-__Catalearn__ is a jupyter notebook plugin that allows you to easily run your code on a GPU. You can simply add a one line magic to your cell and it will automatically be run on a cloud GPU. 
+__Catalearn__ is a python module that allows you to run code on a cloud gpu. It allows you to easily leverage the computing power of GPU servers without having to manage and maintain the infrastructure. 
 
 ## Installation
-1. First install Jupyter Notebook
-2. Install Catalearn with the following command
+Install the Catalearn module with the following command
 
-`sudo pip3 install git+https://github.com/yl573/catalearn`
+`sudo pip3 install catalearn`
 
 ## Update
-1. `sudo pip3 uninstall catalearn`
-2. `sudo pip3 install git+https://github.com/yl573/catalearn`
+Update Catalearn with the following command
 
-## How it works
-Catalearn can be used through its cell magic `%%catalearn`. The syntax is a follows:
-`%%catalearn <YOUR_API_KEY>`
-Where `<YOUR_API_KEY>` is the api key given to you for beta testing
+`sudo pip3 install -u catalearn`
 
-## EXAMPLE
-Run the code below inside a jupyter cell, replacing `<YOUR_API_KEY>` with the key you were given
+## Usage
 ```
-%%catalearn <YOUR_API_KEY>
+import catalearn
 
+@catalearn.run_on_gpu
+def gpu_function(data):
+    print('Doing some serious computation')
+    return 'here is the result'
+
+result = gpu_function('a lot of data')
+# This will run the function on a cloud gpu and return the result
+```
+
+## Example 
+First run `sudo pip3 install keras pandas` to install the modules needed.
+
+```
 from keras.datasets import mnist
 import pandas as pd
-from keras.models import Sequential
-from keras.layers import Dense, Activation, Conv2D, Flatten, MaxPooling2D
+import catalearn
 
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
@@ -37,27 +43,33 @@ x_test_reshape = x_test.reshape(x_test.shape[0], 28, 28, 1)
 y_train_onehot = pd.get_dummies(y_train).as_matrix()
 y_test_onehot = pd.get_dummies(y_test).as_matrix()
 
-model = Sequential()
+@catalearn.run_on_gpu
+def gpu_func(x_train_reshape, x_test_reshape, y_train_onehot, y_test_onehot):
 
-model.add(Conv2D(32, (3, 3), input_shape=(28, 28, 1)))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Conv2D(64, (3, 3)))
-model.add(Flatten())
-model.add(Activation('relu'))
-model.add(Dense(units=10))
-model.add(Activation('softmax'))
+    from keras.models import Sequential
+    from keras.layers import Dense, Activation, Conv2D, Flatten, MaxPooling2D
 
-model.compile(loss='categorical_crossentropy', optimizer='Adadelta', metrics=['accuracy'])
-model.fit(x_train_reshape, y_train_onehot, epochs=5, batch_size=32)
+    model = Sequential()
 
-loss_and_metrics = model.evaluate(x_test_reshape, y_test_onehot, batch_size=512)
-print("\n\nTrained model has test accuracy {0}".format(loss_and_metrics[1]))
+    model.add(Conv2D(32, (3, 3), input_shape=(28, 28, 1)))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+    model.add(Conv2D(64, (3, 3)))
+    model.add(Flatten())
+    model.add(Activation('relu'))
+    model.add(Dense(units=10))
+    model.add(Activation('softmax'))
 
-del x_train_reshape, x_test_reshape, y_train_onehot, y_test_onehot
+    model.compile(loss='categorical_crossentropy', optimizer='Adadelta', metrics=['accuracy'])
+    model.fit(x_train_reshape, y_train_onehot, epochs=5, batch_size=32)
+
+    loss_and_metrics = model.evaluate(x_test_reshape, y_test_onehot, batch_size=512)
+    print("\n\nTrained model has test accuracy {0}".format(loss_and_metrics[1]))
+
+    return model
+
+model = gpu_func(x_train_reshape, x_test_reshape, y_train_onehot, y_test_onehot)
 ```
-You can then use the model in the next cell
-```
-print(loss_and_metrics)
-print(model)
-```
+
+## Any Questions or Suggestions?
+Please email _info@catalearn.com_ if you have any questions or suggestions.
 
